@@ -1,10 +1,15 @@
 {
   "name": "packagetool",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:austo/packagetool.git"
+  },
   "preferGlobal": true,
   "author": {
     "Austin Moran <moraustin@gmail.com>"
   },
-  "description": "command-line utility for writing package.json from existing node_modules",
+  "description": "A command-line utility for writing a package.json file from an existing node_modules directory.",
   "bin": {
     "packagetool": "./getPackageVersions.js"
   },
