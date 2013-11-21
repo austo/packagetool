@@ -1,0 +1,22 @@
+{
+  "name": "packagetool",
+  "preferGlobal": true,
+  "author": {
+    "Austin Moran <moraustin@gmail.com>"
+  },
+  "description": "command-line utility for writing package.json from existing node_modules",
+  "bin": {
+    "packagetool": "./getPackageVersions.js"
+  },
+  "main": "./getPackageVersions.js",
+  "dependencies": {
+    "optimist": "0.6.0"
+  },
+  "engines": [
+    "node >=0.10.0"
+  ],
+  "keywords": [
+    "cli"
+  ]
+
+}
