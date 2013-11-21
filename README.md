@@ -1,0 +1,1 @@
+A utility for creating a package.json file from an existing node_modules directory
