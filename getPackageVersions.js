@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var exec = require('child_process').exec,
   argv = require('optimist')
   .options('d', {
@@ -42,8 +43,8 @@ var exec = require('child_process').exec,
       return;
     }
 
-    // NOTE: currently capturing module directory
-    // under mdir (not being used).
+    // NOTE: currently capturing package
+    // subdirectory under mdir (not being used).
     var re = new RegExp('^' + argv.d.replace(/\//g, '\\\/') +
       '\\\/' + argv.m +'\\\/(\\w[\\w-]*\\w+)\\/' +
       argv.t.replace('.', '\\.') + '$');
@@ -85,4 +86,3 @@ var exec = require('child_process').exec,
     }
   });
 }());
-
