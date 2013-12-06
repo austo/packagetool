@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+'use strict';
+
+var pkg = require('./package');
+
 var exec = require('child_process').exec,
   argv = require('optimist').options('d', {
     alias: 'dir',
@@ -25,11 +29,34 @@ var exec = require('child_process').exec,
       alias: 'console',
       default: false
     })
+    .options('v', {
+      alias: 'version'
+    })
+    .options('h', {
+      alias: 'help'
+    })
     .argv;
 
 
 (function () {
   if (!argv.d) {
+    return;
+  }
+  if (argv.v) {
+    console.log('%s version %s', pkg.name, pkg.version);
+    return;
+  }
+  if (argv.h) {
+    console.log('Usage: %s [options]', pkg.name);
+    console.log('\nOptions:');
+    console.log('\t-m --mdir: node_modules directory ' +
+      '(default = $PWD/node_modules)');
+    console.log('\t-t --target: target directory (default = $PWD)');
+    console.log('\t-p --prop: target property (default = "version")');
+    console.log('\t-f --file: target filename (default = "package.json")');
+    console.log('\t-c --console: output to console instead of saving');
+    console.log('\t-v --version: print version info and exit');
+    console.log('\t-h --help: print this help and exit');
     return;
   }
   var cmd = 'find ' + argv.d + ' -name ' + argv.t;
