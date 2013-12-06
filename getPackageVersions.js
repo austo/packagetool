@@ -1,40 +1,39 @@
 #!/usr/bin/env node
 
 var exec = require('child_process').exec,
-  argv = require('optimist')
-  .options('d', {
+  argv = require('optimist').options('d', {
     alias: 'dir',
     default: process.cwd(),
   })
-  .options('m', {
-    alias: 'mdir',
-    default: 'node_modules'
-  })
-  .options('t', {
-    alias: 'target',
-    default: 'package.json'
-  })
-  .options('p', {
-    alias: 'prop',
-    default: 'version'
-  })
-  .options('f', {
-    alias: 'file',
-    default: 'package.json'
-  })
-  .options('c', {
-    alias: 'console',
-    default: false
-  })
-  .argv;
+    .options('m', {
+      alias: 'mdir',
+      default: 'node_modules'
+    })
+    .options('t', {
+      alias: 'target',
+      default: 'package.json'
+    })
+    .options('p', {
+      alias: 'prop',
+      default: 'version'
+    })
+    .options('f', {
+      alias: 'file',
+      default: 'package.json'
+    })
+    .options('c', {
+      alias: 'console',
+      default: false
+    })
+    .argv;
 
 
-(function(){
+(function () {
   if (!argv.d) {
     return;
   }
   var cmd = 'find ' + argv.d + ' -name ' + argv.t;
-  exec(cmd, function(err, stdout, stderr) {
+  exec(cmd, function (err, stdout, stderr) {
     if (err) {
       console.log('exec error: ' + err);
       return;
@@ -46,7 +45,7 @@ var exec = require('child_process').exec,
     // NOTE: currently capturing package
     // subdirectory under mdir (not being used).
     var re = new RegExp('^' + argv.d.replace(/\//g, '\\\/') +
-      '\\\/' + argv.m +'\\\/(\\w[\\w-]*\\w+)\\/' +
+      '\\\/' + argv.m + '\\\/(\\w[\\w-]*\\w+)\\/' +
       argv.t.replace('.', '\\.') + '$');
 
     var fnames = stdout.split('\n'),
@@ -76,12 +75,22 @@ var exec = require('child_process').exec,
       console.log('stderr: ' + stderr);
     }
     if (!argv.c) {
-      var filePath = require('path').join(argv.d, argv.f);
-      require('fs').writeFile(filePath, JSON.stringify(retval), function(err){
-        if (err) {
-          throw err;
+      var fs = require('fs'),
+        filePath = require('path').join(argv.d, argv.f);
+
+      fs.exists(filePath, function (exists) {
+        if (exists) {
+          // update dependencies with retval
+          var oldPackageJson = require(filePath);
+          oldPackageJson.dependencies = retval.dependencies;
+          retval = oldPackageJson;
         }
-        console.log('%s saved to %s', argv.f, filePath);
+        fs.writeFile(filePath, JSON.stringify(retval), function (err) {
+          if (err) {
+            throw err;
+          }
+          console.log('%s saved to %s', argv.f, filePath);
+        });
       });
     }
   });

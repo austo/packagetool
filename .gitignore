@@ -2,3 +2,4 @@ node_modules/
 scraps/
 .DS_Store
 Thumbs.db
+*.todo

@@ -1,6 +1,6 @@
 {
   "name": "packagetool",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/austo/packagetool.git"
@@ -18,10 +18,6 @@
   "dependencies": {
     "optimist": "0.6.0"
   },
-  "engines": [
-    "node >=0.10.0"
-  ],
-  "keywords": [
-    "cli"
-  ]
+  "engines": ["node >=0.10.0"],
+  "keywords": ["cli"]
 }
