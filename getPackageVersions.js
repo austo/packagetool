@@ -35,7 +35,8 @@ var exec = require('child_process').exec,
     .options('h', {
       alias: 'help'
     })
-    .argv;
+    .argv,
+  repoRe = /\/[^\/]+\/|git/;
 
 
 (function () {
@@ -109,6 +110,19 @@ var exec = require('child_process').exec,
         if (exists) {
           // update dependencies with retval
           var oldPackageJson = require(filePath);
+
+          // Don't step on non-npm repos
+          if (oldPackageJson.dependencies) {
+            var deps = oldPackageJson.dependencies;
+            for (var d in deps) {
+              if (!deps.hasOwnProperty(d)) {
+                continue;
+              }
+              if (repoRe.test(deps[d])) {
+                retval.dependencies[d] = deps[d];
+              }
+            }
+          }
           oldPackageJson.dependencies = retval.dependencies;
           retval = oldPackageJson;
         }
