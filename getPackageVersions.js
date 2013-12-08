@@ -38,6 +38,22 @@ var exec = require('child_process').exec,
     .argv,
   repoRe = /\/[^\/]+\/|git/;
 
+// Don't step on non-npm repos
+
+function saveCustomRepos(mapName, oldPkg, newPkg) {
+  if (oldPkg[mapName]) {
+    var deps = oldPkg[mapName];
+    for (var d in deps) {
+      if (!deps.hasOwnProperty(d)) {
+        continue;
+      }
+      if (repoRe.test(deps[d])) {
+        newPkg[mapName][d] = deps[d];
+      }
+    }
+  }
+  oldPkg[mapName] = newPkg[mapName];
+}
 
 (function () {
   if (!argv.d) {
@@ -111,19 +127,10 @@ var exec = require('child_process').exec,
           // update dependencies with retval
           var oldPackageJson = require(filePath);
 
-          // Don't step on non-npm repos
-          if (oldPackageJson.dependencies) {
-            var deps = oldPackageJson.dependencies;
-            for (var d in deps) {
-              if (!deps.hasOwnProperty(d)) {
-                continue;
-              }
-              if (repoRe.test(deps[d])) {
-                retval.dependencies[d] = deps[d];
-              }
-            }
-          }
-          oldPackageJson.dependencies = retval.dependencies;
+          ['dependencies', 'devDependencies'].forEach(function(val) {
+            saveCustomRepos(val, oldPackageJson, retval);
+          });
+          
           retval = oldPackageJson;
         }
         fs.writeFile(filePath, JSON.stringify(retval), function (err) {
